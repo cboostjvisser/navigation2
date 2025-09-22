@@ -64,6 +64,12 @@ bool LifecycleServiceClient::change_state(
   const uint8_t transition,
   const seconds timeout)
 {
+  if (stop_)
+  {
+    RCLCPP_INFO(node_->get_logger(), "Stop triggered, not changing state");
+    return false;
+  }
+
   if (!change_state_.wait_for_service(timeout)) {
     throw std::runtime_error("change_state service is not available!");
   }
@@ -77,6 +83,12 @@ bool LifecycleServiceClient::change_state(
 bool LifecycleServiceClient::change_state(
   std::uint8_t transition)
 {
+  if (stop_)
+  {
+    RCLCPP_INFO(node_->get_logger(), "Stop triggered, not changing state");
+    return false;
+  }
+
   if (!change_state_.wait_for_service(5s)) {
     throw std::runtime_error("change_state service is not available!");
   }

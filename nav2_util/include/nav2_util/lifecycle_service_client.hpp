@@ -38,6 +38,14 @@ public:
 
   ~LifecycleServiceClient()
   {
+    stop();
+
+    RCLCPP_ERROR(node_->get_logger(), "Destroying LifecycleServiceClient for %s", change_state_.getServiceName().c_str());
+  }
+
+  void stop()
+  {
+    stop_ = true;
     change_state_.stop();
     get_state_.stop();
   }
@@ -63,6 +71,9 @@ protected:
   rclcpp::Node::SharedPtr node_;
   ServiceClient<lifecycle_msgs::srv::ChangeState> change_state_;
   ServiceClient<lifecycle_msgs::srv::GetState> get_state_;
+
+private:
+  bool stop_ = false;
 };
 
 }  // namespace nav2_util
